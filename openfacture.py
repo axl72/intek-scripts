@@ -3,6 +3,7 @@ import sys
 import re
 import os
 import argparse
+import path
 
 parser = argparse.ArgumentParser()
 parser.add_argument("facture")
@@ -23,19 +24,8 @@ def open_file(path, opcion=None):
     subprocess.Popen([path], shell=True)
 
 
-def get_listdir(path, result=[]):
-    list_dir = os.listdir(path)
-    list_dir = [os.path.join(path, dir) for dir in list_dir]
-    for dir in list_dir:
-        if os.path.isdir(dir):
-            get_listdir(os.path.join(path, dir), result)
-        elif os.path.isfile(dir):
-            result.append(os.path.join(path, dir))
-    return result
-
-
 def get_facture_path(db_path, facture: str):
-    files = get_listdir(db_path)
+    files = path.get_listdir(db_path)
     for file in files:
         if re.search(facture, file):
             print(f"{OK}Comprobante {facture} encontrado{RESET}")
