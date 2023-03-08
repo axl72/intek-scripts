@@ -3,12 +3,14 @@ import sys
 import re
 import os
 import argparse
-import path
+import masterpath
 
 parser = argparse.ArgumentParser()
 parser.add_argument("facture")
 parser.add_argument(
     "--explorer", help="Permite encontrar obtener el directorio donde está almacenado el archivo", action="store_true")
+parser.add_argument(
+    "--xml", help="Permite abrir el xml en lugar del pdf", action="store_true")
 
 OK = '\033[92m'  # GREEN
 WARNING = '\033[93m'  # YELLOW
@@ -16,16 +18,21 @@ FAIL = '\033[91m'  # RED
 RESET = '\033[0m'  # RESET COLOR
 
 
-def open_file(path, opcion=None):
+def open_file(path: str, opcion=None):
     # print(parser.parse_args())
-    if parser.parse_args().explorer:
+    argumentos = parser.parse_args()
+
+    if argumentos.xml:
+        path = path.replace("pdf", "XML")
+
+    if argumentos.explorer:
         subprocess.Popen(f'explorer /select,"{path}"')
         return
     subprocess.Popen([path], shell=True)
 
 
 def get_facture_path(db_path, facture: str):
-    files = path.get_listdir(db_path)
+    files = masterpath.get_listdir(db_path)
     for file in files:
         if re.search(facture, file):
             print(f"{OK}Comprobante {facture} encontrado{RESET}")
